@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigGame.lib", "PigGame.lib\PigGame.lib.csproj", "{8F17AEC2-C085-479A-BB2C-BB435491B16C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigGame.ui.console", "PigGame.ui.console\PigGame.ui.console.csproj", "{BEC97851-36EB-4CDB-A0FE-191EDC594888}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PigGame.lib.tests", "PigGame.lib.tests\PigGame.lib.tests.csproj", "{56749165-D52D-41FB-BB57-A60E8C1C16DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{8F17AEC2-C085-479A-BB2C-BB435491B16C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F17AEC2-C085-479A-BB2C-BB435491B16C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F17AEC2-C085-479A-BB2C-BB435491B16C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC97851-36EB-4CDB-A0FE-191EDC594888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC97851-36EB-4CDB-A0FE-191EDC594888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC97851-36EB-4CDB-A0FE-191EDC594888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC97851-36EB-4CDB-A0FE-191EDC594888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56749165-D52D-41FB-BB57-A60E8C1C16DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56749165-D52D-41FB-BB57-A60E8C1C16DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56749165-D52D-41FB-BB57-A60E8C1C16DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56749165-D52D-41FB-BB57-A60E8C1C16DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
