@@ -51,7 +51,14 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Models\DiceModelTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\PigGame.lib\PigGame.lib.csproj">
+        <Project>{8f17aec2-c085-479a-bb2c-bb435491b16c}</Project>
+        <Name>PigGame.lib</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
