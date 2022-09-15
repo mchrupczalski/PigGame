@@ -6,7 +6,6 @@ namespace PigGame.lib.Models
     {
         #region Properties
 
-        public GameScoreModel Game { get; }
         public string Name { get; }
 
         #endregion
@@ -17,11 +16,9 @@ namespace PigGame.lib.Models
         ///     Creates new Player instance
         /// </summary>
         /// <param name="name">Player name</param>
-        /// <param name="gameScoreModel">Game Model keeping user track of player turns, throws and score</param>
         /// <exception cref="ArgumentNullException">Thrown if player name not specified</exception>
-        public PlayerModel(string name, GameScoreModel gameScoreModel)
+        public PlayerModel(string name)
         {
-            Game = gameScoreModel;
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
