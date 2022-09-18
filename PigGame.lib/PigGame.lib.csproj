@@ -42,14 +42,16 @@
         <Compile Include="Enums\GameMode.cs" />
         <Compile Include="Enums\MainMenuOption.cs" />
         <Compile Include="Enums\PlayerAction.cs" />
+        <Compile Include="Exceptions\DoubleOnesRolledAddsBonusException.cs" />
+        <Compile Include="Exceptions\DoubleOnesRolledScoreLostTurnEndException.cs" />
+        <Compile Include="Exceptions\DoubleRolledDoubleTheRollBonusException.cs" />
         <Compile Include="Exceptions\GameWonException.cs" />
         <Compile Include="Exceptions\InvalidPlayerActionException.cs" />
-        <Compile Include="Exceptions\MustRollCantHoldException.cs" />
-        <Compile Include="Exceptions\NoScoreTurnEndException.cs" />
+        <Compile Include="Exceptions\DoubleRolledMustRollCantHoldException.cs" />
+        <Compile Include="Exceptions\OneRolledNoScoreTurnEndException.cs" />
         <Compile Include="Exceptions\NotEnoughPlayersException.cs" />
         <Compile Include="Exceptions\PlayerNameIsTakenException.cs" />
         <Compile Include="Exceptions\PlayerNameNullException.cs" />
-        <Compile Include="Factories\DIceRollValidatorFactory.cs" />
         <Compile Include="Factories\PlayerFactory.cs" />
         <Compile Include="Factories\DiceRollModelFactory.cs" />
         <Compile Include="GameEngine.cs" />
@@ -59,8 +61,11 @@
         <Compile Include="Models\DiceRollModel.cs" />
         <Compile Include="Models\TurnModel.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Validators\BigPigRollValidator.cs" />
+        <Compile Include="Validators\DiceRollValidatorBase.cs" />
         <Compile Include="Validators\IDiceRollValidator.cs" />
         <Compile Include="Validators\SingleDiceRollValidator.cs" />
+        <Compile Include="Validators\TwoDiceRollValidator.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

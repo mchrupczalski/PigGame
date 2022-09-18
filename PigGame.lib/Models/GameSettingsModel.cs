@@ -1,20 +1,37 @@
-﻿using PigGame.lib.Enums;
-using PigGame.lib.Factories;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PigGame.lib.Enums;
 using PigGame.lib.Validators;
 
 namespace PigGame.lib.Models
 {
     public class GameSettingsModel
     {
+        #region Delegates
+
+        public delegate IDiceRollValidator DiceRollValidatorResolver(GameMode gameModeKey);
+
+        #endregion
+
         #region Fields
 
-        private readonly DIceRollValidatorFactory _validatorFactory;
+        public IEnumerable<(DiceType diceType, int winScore)> DiceTypeWinScores { get; } = new List<(DiceType diceType, int winScore)>
+        {
+            (DiceType.D4, 67),
+            (DiceType.D6, 100),
+            (DiceType.D8, 133),
+            (DiceType.D10, 167),
+            (DiceType.D12, 200),
+            (DiceType.D20, 333)
+        };
+
+        private readonly DiceRollValidatorResolver _validatorResolver;
 
         #endregion
 
         #region Properties
 
-        public int DiceCount { get; private set; } 
+        public int DiceCount { get; private set; }
 
         public DiceModel Dice { get; }
         public GameMode GameMode { get; private set; }
@@ -25,9 +42,9 @@ namespace PigGame.lib.Models
 
         #region Constructors
 
-        public GameSettingsModel(DiceModel dice, DIceRollValidatorFactory validatorFactory)
+        public GameSettingsModel(DiceModel dice, DiceRollValidatorResolver validatorResolver)
         {
-            _validatorFactory = validatorFactory;
+            _validatorResolver = validatorResolver;
             Dice = dice;
             ChangeGameMode(GameMode.Normal);
         }
@@ -38,7 +55,13 @@ namespace PigGame.lib.Models
         {
             DiceCount = mode == GameMode.Normal ? 1 : 2;
             GameMode = mode;
-            DiceRollValidator = _validatorFactory.Create(mode);
+            DiceRollValidator = _validatorResolver(mode);
+        }
+
+        public void ChangeDiceType(DiceType diceType)
+        {
+            Dice.SetDiceType(diceType);
+            SetWinningScore(DiceTypeWinScores.First(d => d.diceType == diceType).winScore);
         }
 
         public void SetWinningScore(int winScore) => WinScore = winScore;

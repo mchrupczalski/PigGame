@@ -51,7 +51,7 @@ namespace PigGame.lib.Models
         /// </summary>
         /// <param name="diceType">Dice type</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SetDiceType(DiceType diceType)
+        internal void SetDiceType(DiceType diceType)
         {
             switch (diceType)
             {

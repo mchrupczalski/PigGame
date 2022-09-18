@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PigGame.lib;
 using PigGame.lib.Enums;
 using PigGame.lib.Exceptions;
@@ -120,9 +121,6 @@ namespace PigGame.ui.console
                 }
         }
 
-        private void SetConsoleForErrorDisplay() => Console.ForegroundColor = ConsoleColor.DarkRed;
-        private void SetConsoleForSuccessDisplay() => Console.ForegroundColor = ConsoleColor.Green;
-
         private void OptionAddPlayer()
         {
             var playerAdded = false;
@@ -174,6 +172,7 @@ namespace PigGame.ui.console
 
                     var action = Console.ReadLine();
                     PlayerMove(action);
+                    gameEnded = _gameEngine.PlayerWon();
                 }
                 catch (InvalidPlayerActionException e)
                 {
@@ -182,7 +181,7 @@ namespace PigGame.ui.console
                     Console.ReadKey();
                     Console.ResetColor();
                 }
-                catch (NoScoreTurnEndException e)
+                catch (OneRolledNoScoreTurnEndException e)
                 {
                     SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrContinue}");
@@ -190,9 +189,31 @@ namespace PigGame.ui.console
                     Console.ResetColor();
                     _gameEngine.NextPlayer();
                 }
-                catch (MustRollCantHoldException e)
+                catch (DoubleRolledMustRollCantHoldException e)
+                {
+                    SetConsoleForWarningDisplay();
+                    Console.WriteLine($"{e.Message} {ErrContinue}");
+                    Console.ReadKey();
+                    Console.ResetColor();
+                }
+                catch (DoubleOnesRolledScoreLostTurnEndException e)
                 {
                     SetConsoleForErrorDisplay();
+                    Console.WriteLine($"{e.Message} {ErrContinue}");
+                    Console.ReadKey();
+                    Console.ResetColor();
+                    _gameEngine.NextPlayer();
+                }
+                catch (DoubleOnesRolledAddsBonusException e)
+                {
+                    SetConsoleForSuccessDisplay();
+                    Console.WriteLine($"{e.Message} {ErrContinue}");
+                    Console.ReadKey();
+                    Console.ResetColor();
+                }
+                catch (DoubleRolledDoubleTheRollBonusException e)
+                {
+                    SetConsoleForSuccessDisplay();
                     Console.WriteLine($"{e.Message} {ErrContinue}");
                     Console.ReadKey();
                     Console.ResetColor();
@@ -241,13 +262,23 @@ namespace PigGame.ui.console
                     Console.Write("Select: ");
 
                     var newDiceType = Console.ReadLine();
+                    while (string.IsNullOrEmpty(newDiceType))
+                    {
+                        SetConsoleForErrorDisplay();
+                        Console.WriteLine("Please select new dice type!");
+                        Console.ResetColor();
+                        newDiceType = Console.ReadLine();
+                    }
+                    
                     var diceTypeExists = _messages.DiceTypes.TryGetValue(newDiceType, out var newDice);
                     if (!diceTypeExists) throw new ArgumentOutOfRangeException(nameof(newDiceType), $"There is no dice of type {newDiceType}");
+                    var newWinScore = _gameEngine.Settings.DiceTypeWinScores.First(d => d.diceType == newDice)
+                                                 .winScore.ToString();
 
-                    _gameEngine.Settings.Dice.SetDiceType(newDice);
+                    _gameEngine.Settings.ChangeDiceType(newDice);
 
                     SetConsoleForSuccessDisplay();
-                    Console.WriteLine($"Dice type changed to {newDice}.\nReturn to main menu? Y/N:");
+                    Console.WriteLine($"Dice type changed to {newDice}.\nWin Score changed to:{newWinScore}\nReturn to main menu? Y/N:");
                     Console.ResetColor();
                     var answer = Console.ReadLine();
                     diceChanged = answer?.ToUpper() == "Y";
@@ -276,12 +307,21 @@ namespace PigGame.ui.console
                 try
                 {
                     Console.Clear();
-                    Console.WriteLine($"Current: \n {_messages.ShowCurrentGameSettingGameMode()}");
                     Console.WriteLine("Change Game Mode.");
+                    Console.WriteLine($"Current Game Mode Settings:\n{_messages.ShowCurrentGameSettingGameMode()}\n");
                     Console.WriteLine(_messages.ShowGameModesList());
                     Console.Write("Select: ");
+                    
                     var newGameMode = Console.ReadLine();
-                    var gameModeExists = _messages.GameModes.TryGetValue(newGameMode, out var newMode);
+                    while (string.IsNullOrEmpty(newGameMode))
+                    {
+                        SetConsoleForErrorDisplay();
+                        Console.WriteLine("Please select a new game mode!");
+                        Console.ResetColor();
+                        newGameMode = Console.ReadLine();
+                    }
+                    
+                    var gameModeExists = _messages.GameModes.TryGetValue(newGameMode.ToUpper(), out var newMode);
                     if (!gameModeExists) throw new ArgumentOutOfRangeException(nameof(newGameMode), $"There is no game mode of type {newGameMode}");
 
                     _gameEngine.Settings.ChangeGameMode(newMode);
@@ -320,9 +360,9 @@ namespace PigGame.ui.console
                     Console.WriteLine("Change Win Score.");
                     Console.Write("New Win Score: ");
                     var newWinScore = Console.ReadLine();
-                    var canConver = int.TryParse(newWinScore, out var winScore);
+                    var canConvert = int.TryParse(newWinScore, out var winScore);
 
-                    if (!canConver) throw new ArgumentException("Incorrect value! New win score must be a number!");
+                    if (!canConvert) throw new ArgumentException("Incorrect value! New win score must be a number!");
                     _gameEngine.Settings.SetWinningScore(winScore);
 
                     SetConsoleForSuccessDisplay();
@@ -363,5 +403,9 @@ namespace PigGame.ui.console
 
             throw new InvalidMenuOptionException($"Keys [{char.ToLower(selectedOptionFirstChar)}] or [{char.ToUpper(selectedOptionFirstChar)}] are not a valid options.");
         }
+        
+        private void SetConsoleForErrorDisplay() => Console.ForegroundColor = ConsoleColor.DarkRed;
+        private void SetConsoleForSuccessDisplay() => Console.ForegroundColor = ConsoleColor.Green;
+        private void SetConsoleForWarningDisplay() => Console.ForegroundColor = ConsoleColor.DarkYellow;
     }
 }

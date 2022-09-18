@@ -109,22 +109,37 @@ namespace PigGame.lib
                         throw new ArgumentOutOfRangeException(nameof(action), action, null);
                 }
             }
-            catch (NoScoreTurnEndException e)
+            catch (OneRolledNoScoreTurnEndException)
             {
                 // reset any score for this turn to 0
                 CurrentPlayer.Turns.CurrentTurnRolls.OverrideScore(0);
+                CurrentPlayer.Turns.EndTurn();
                 throw;
             }
             // ReSharper disable once RedundantCatchClause
-            catch (MustRollCantHoldException e)
+            catch (DoubleRolledMustRollCantHoldException)
             {
+                CurrentPlayer.Turns.CurrentTurnRolls.MustRoll = true;
                 throw;
             }
-
-            if (!PlayerWon()) return;
-            
-            CurrentPlayer.Turns.EndTurn();
-            throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
+            catch (DoubleOnesRolledScoreLostTurnEndException)
+            {
+                var totalScore = CurrentPlayer.Turns.GameScore(true);
+                CurrentPlayer.Turns.CurrentTurnRolls.OverrideScore(totalScore * -1);
+                CurrentPlayer.Turns.EndTurn();
+                throw;
+            }
+            catch (DoubleOnesRolledAddsBonusException)
+            {
+                CurrentPlayer.Turns.CurrentTurnRolls.AddRollBonus(25);
+                throw;
+            }
+            catch (DoubleRolledDoubleTheRollBonusException)
+            {
+                var bonus = CurrentPlayer.Turns.CurrentTurnRolls.LatestRolls.Sum() * 2;
+                CurrentPlayer.Turns.CurrentTurnRolls.AddRollBonus(bonus);
+                throw;
+            }
         }
 
         public void ResetPlayersGame()
@@ -141,18 +156,26 @@ namespace PigGame.lib
             Settings.DiceRollValidator.RollIsValid(rolls);
         }
 
-        private bool PlayerWon() => CurrentPlayer.Turns.GameScore(true) >= Settings.WinScore;
+        public bool PlayerWon()
+        {
+            var won = CurrentPlayer.Turns.GameScore(true) >= Settings.WinScore;
+            
+            if (!won) return false;
+            
+            CurrentPlayer.Turns.EndTurn();
+            throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
+        }
 
         /// <summary>
         ///     Player holds current turn
         /// </summary>
-        /// <exception cref="MustRollCantHoldException">
+        /// <exception cref="DoubleRolledMustRollCantHoldException">
         ///     Depending on Roll Validator, player may be blocked from holding, must roll
         ///     again
         /// </exception>
         private void PlayerHold()
         {
-            if (CurrentPlayer.Turns.CurrentTurnRolls.MustRoll) throw new MustRollCantHoldException($"{CurrentPlayer.Name} cannot hold. Must roll again.");
+            if (CurrentPlayer.Turns.CurrentTurnRolls.MustRoll) throw new DoubleRolledMustRollCantHoldException($"{CurrentPlayer.Name} cannot hold. Must roll again.");
             CurrentPlayer.Turns.EndTurn();
             NextPlayer();
         }
