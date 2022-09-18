@@ -2,7 +2,7 @@
 {
     public enum PlayerAction
     {
-        ThrowDice,
+        Roll,
         Hold
     }
 }

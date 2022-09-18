@@ -1,25 +1,45 @@
-﻿using DryIoc;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PigGame.lib;
 using PigGame.lib.Factories;
 using PigGame.lib.Models;
+using PigGame.lib.Validators;
+using PigGame.ui.console.Utilities;
 
 namespace PigGame.ui.console
 {
     public class BootStrapper
     {
-        public IContainer Bootstrap()
+        public IHost Bootstrap()
         {
-            var container = new Container();
-            
-            container.Register<DiceModel>(Reuse.Singleton);
-            container.Register<GameScoreModel>();
-            container.Register<GameTurnModelSingleDice>();
-            container.Register<GameTurnModelSingleDiceFactory>(Reuse.Singleton);
-            container.Register<GameScoreModelFactory>(Reuse.Singleton);
-            container.Register<GameEngine>();
-            container.Register<Game>();
+            var host = Host.CreateDefaultBuilder()
+                           .ConfigureServices((context, services) =>
+                            {
+                                // register models
+                                services.AddSingleton<GameSettingsModel>();
+                                services.AddSingleton<DiceModel>();
+                                services.AddSingleton<DiceRollModel>();
+                                services.AddTransient<TurnModel>();
+                                services.AddTransient<PlayerModel>();
 
-            return container;
+                                // register factories
+                                services.AddSingleton<DiceRollModelFactory>();
+                                services.AddSingleton(provider => new DIceRollValidatorFactory(provider));
+                                services.AddSingleton<PlayerFactory>();
+                                services.AddSingleton(provider => new TurnModel.DiceRollModelCreator(() => new DiceRollModel()));
+                                services.AddSingleton(provider => new PlayerFactory.TurnCreator(() => new TurnModel(provider.GetRequiredService<TurnModel.DiceRollModelCreator>())));
+
+                                // register utils
+                                services.AddSingleton<IDiceRollValidator, SingleDiceRollValidator>();
+                                services.AddSingleton<GameEngine>();
+                                services.AddSingleton<ConsoleGameService>();
+                                services.AddSingleton<Messages>();
+                                
+                                // utilities
+                                services.AddSingleton<GameScoreToTableConverter>();
+                            })
+                           .Build();
+            return host;
         }
     }
 }

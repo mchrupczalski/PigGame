@@ -1,6 +1,10 @@
 ﻿using System;
-using DryIoc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PigGame.lib;
+using PigGame.lib.Factories;
+using PigGame.lib.Models;
+using PigGame.lib.Validators;
 
 namespace PigGame.ui.console
 {
@@ -8,21 +12,10 @@ namespace PigGame.ui.console
     {
         public static void Main(string[] args)
         {
-            var b = new BootStrapper().Bootstrap();
-            var game = b.Resolve<Game>();
+            var host = new BootStrapper().Bootstrap();
+            var game = ActivatorUtilities.CreateInstance<ConsoleGameService>(host.Services);
 
-            var consoleGame = new ConsoleGame(game);
-            consoleGame.Play();
-            
-            Console.ReadKey();
-            // setup game
-            // add players
-            // start game
-            // show player name, ask for action
-            // do move
-            // show result
-            // next player
-            // loop
+            game.Run();
         }
     }
 }

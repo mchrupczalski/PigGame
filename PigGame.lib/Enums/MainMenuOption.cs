@@ -1,11 +1,12 @@
 ﻿namespace PigGame.lib.Enums
 {
-    public enum GameOption
+    public enum MainMenuOption
     {
         AddPlayer,
         ExitGame,
-        RestartGame,
         StartGame,
-        ShowPlayers
+        ChangeDiceType,
+        ChangeGameMode,
+        ChangeWinScore
     }
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using PigGame.lib.Enums;
 using PigGame.lib.Exceptions;
+using PigGame.lib.Factories;
 using PigGame.lib.Models;
-using PigGame.lib.Validators;
 
 namespace PigGame.lib
 {
@@ -12,66 +12,85 @@ namespace PigGame.lib
     {
         #region Fields
 
-        private readonly int _diceCount;
+        /// <summary>
+        ///     A Factory Object responsible for creating new players
+        /// </summary>
+        private readonly PlayerFactory _playerFactory;
 
-        private readonly IDiceRollValidator _diceRollValidator;
-        private readonly int _gameTargetScore;
+        /// <summary>
+        ///     An integer representing list index of the current player
+        /// </summary>
         private int _currentPlayerNo;
-        private int _playerRollCounter;
 
         #endregion
 
         #region Properties
 
-        public Dictionary<int, List<int>> CurrentPlayerTurnRolls { get; } = new Dictionary<int, List<int>>();
+        /// <summary>
+        ///     An object holding game settings. <see cref="GameSettingsModel" />
+        /// </summary>
+        public GameSettingsModel Settings { get; }
 
-        public Dictionary<PlayerModel, GameScoreModel> ScoreBoard { get; set; } = new Dictionary<PlayerModel, GameScoreModel>();
+        /// <summary>
+        ///     A list of Players
+        /// </summary>
+        public List<PlayerModel> Players { get; set; } = new List<PlayerModel>();
+
+        /// <summary>
+        ///     An object representing the active player
+        /// </summary>
         public PlayerModel CurrentPlayer { get; private set; }
-
-        public int CurrentTurnCounter { get; private set; }
-        public DiceModel Dice { get; }
 
         #endregion
 
         #region Constructors
 
-        public GameEngine(IDiceRollValidator diceRollValidator, DiceModel dice, int diceCount = 1, int gameTargetScore = 100)
+        /// <summary>
+        ///     Creates a new instance of <see cref="GameEngine" />
+        /// </summary>
+        /// <param name="playerFactory">A Factory object responsible for creating new players</param>
+        /// <param name="settings">An object representing the game settings</param>
+        public GameEngine(PlayerFactory playerFactory, GameSettingsModel settings)
         {
-            _diceRollValidator = diceRollValidator;
-            _diceCount = diceCount;
-            _gameTargetScore = gameTargetScore;
-            Dice = dice;
+            Settings = settings;
+            _playerFactory = playerFactory;
         }
 
         #endregion
 
+        /// <summary>
+        ///     Starts the game
+        /// </summary>
+        /// <exception cref="NotEnoughPlayersException">Thrown if not enough players</exception>
         public void StartGame()
         {
-            if (ScoreBoard.Count < 2) throw new ArgumentOutOfRangeException("Not enough players!");
-            CurrentPlayer = ScoreBoard.Keys.First();
+            if (Players.Count < 2) throw new NotEnoughPlayersException("Not enough players!");
+            CurrentPlayer = Players[0];
+            CurrentPlayer.Turns.NextTurn();
         }
 
-        public void AddPlayer(PlayerModel player)
+        /// <summary>
+        ///     Adds Player to the game
+        /// </summary>
+        /// <param name="name">A new player name</param>
+        /// <exception cref="PlayerNameIsTakenException">Thrown if a player with the same name already exists</exception>
+        public void AddPlayer(string name)
         {
-            var gs = new GameScoreModel();
-            ScoreBoard.Add(player, gs);
+            if (Players.FirstOrDefault(p => p.Name == name) != null) throw new PlayerNameIsTakenException($"{name} is already taken, please try a different name.");
+            if (string.IsNullOrEmpty(name)) throw new PlayerNameNullException("Player name cannot be empty!");
+            Players.Add(_playerFactory.Create(name));
         }
 
-        private void NextPlayer()
+        /// <summary>
+        ///     Starts next player turn
+        /// </summary>
+        public void NextPlayer()
         {
             _currentPlayerNo++;
 
-            if (_currentPlayerNo == ScoreBoard.Count)
-            {
-                _currentPlayerNo = 0;
-                CurrentTurnCounter++;
-            }
-
-            CurrentPlayer = ScoreBoard.ElementAt(_currentPlayerNo)
-                                      .Key;
-
-            CurrentPlayerTurnRolls.Clear();
-            _playerRollCounter = 0;
+            if (_currentPlayerNo == Players.Count) _currentPlayerNo = 0;
+            CurrentPlayer = Players[_currentPlayerNo];
+            CurrentPlayer.Turns.NextTurn();
         }
 
         public void PlayerMove(PlayerAction action)
@@ -80,18 +99,11 @@ namespace PigGame.lib
             {
                 switch (action)
                 {
-                    case PlayerAction.ThrowDice:
-                        _playerRollCounter++;
-                        var rolls = PlayerRollDices()
-                           .ToList();
-                        CurrentPlayerTurnRolls.Add(_playerRollCounter, rolls);
+                    case PlayerAction.Roll:
+                        PlayerRollDice();
                         break;
                     case PlayerAction.Hold:
-                        ScoreBoard[CurrentPlayer]
-                           .AddTurn(CurrentPlayerTurnRolls);
-                        if (ScoreBoard[CurrentPlayer]
-                               .GameScore() >= _gameTargetScore) throw new GameWonException($"{CurrentPlayer.Name} WON!!");
-                        NextPlayer();
+                        PlayerHold();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -99,20 +111,42 @@ namespace PigGame.lib
             }
             catch (NoScoreTurnEndException e)
             {
-                CurrentPlayer
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                // reset any score for this turn to 0
+                CurrentPlayer.Turns.CurrentTurnRolls.OverrideScore(0);
                 throw;
             }
+            // ReSharper disable once RedundantCatchClause
+            catch (MustRollCantHoldException e)
+            {
+                throw;
+            }
+            
+            if(PlayerWon()) throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
         }
 
-        public IEnumerable<int> PlayerRollDices()
+        private void PlayerRollDice()
         {
-            for (var i = 0; i < _diceCount; i++) _diceRollValidator.AddDiceRoll(Dice.Roll());
+            var rolls = new List<int>();
+            for (var i = 0; i < Settings.DiceCount; i++) rolls.Add(Settings.Dice.Roll());
 
-            return _diceRollValidator.ValidateRolls();
+            CurrentPlayer.Turns.CurrentTurnRolls.AddDicesRoll(rolls);
+            Settings.DiceRollValidator.RollIsValid(rolls);
+        }
+
+        private bool PlayerWon() => CurrentPlayer.Turns.GameScore(true) >= Settings.WinScore;
+
+        /// <summary>
+        ///     Player holds current turn
+        /// </summary>
+        /// <exception cref="MustRollCantHoldException">
+        ///     Depending on Roll Validator, player may be blocked from holding, must roll
+        ///     again
+        /// </exception>
+        private void PlayerHold()
+        {
+            if (CurrentPlayer.Turns.CurrentTurnRolls.MustRoll) throw new MustRollCantHoldException($"{CurrentPlayer.Name} cannot hold. Must roll again.");
+            CurrentPlayer.Turns.EndTurn();
+            NextPlayer();
         }
     }
 }

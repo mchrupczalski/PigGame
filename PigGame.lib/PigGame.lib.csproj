@@ -38,21 +38,25 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Enums\GameOption.cs" />
+        <Compile Include="Enums\DiceType.cs" />
+        <Compile Include="Enums\GameMode.cs" />
+        <Compile Include="Enums\MainMenuOption.cs" />
         <Compile Include="Enums\PlayerAction.cs" />
         <Compile Include="Exceptions\GameWonException.cs" />
+        <Compile Include="Exceptions\InvalidPlayerActionException.cs" />
+        <Compile Include="Exceptions\MustRollCantHoldException.cs" />
         <Compile Include="Exceptions\NoScoreTurnEndException.cs" />
-        <Compile Include="Exceptions\TurnEndedException.cs" />
-        <Compile Include="Exceptions\ThrowLostException.cs" />
-        <Compile Include="Factories\GameScoreModelFactory.cs" />
-        <Compile Include="Factories\GameTurnModelSingleDiceFactory.cs" />
-        <Compile Include="Game.cs" />
+        <Compile Include="Exceptions\NotEnoughPlayersException.cs" />
+        <Compile Include="Exceptions\PlayerNameIsTakenException.cs" />
+        <Compile Include="Exceptions\PlayerNameNullException.cs" />
+        <Compile Include="Factories\DIceRollValidatorFactory.cs" />
+        <Compile Include="Factories\PlayerFactory.cs" />
+        <Compile Include="Factories\DiceRollModelFactory.cs" />
         <Compile Include="GameEngine.cs" />
         <Compile Include="Models\DiceModel.cs" />
-        <Compile Include="Models\DiceRollModel.cs" />
-        <Compile Include="Models\GameScoreModel.cs" />
-        <Compile Include="Models\GameTurnModelSingleDice.cs" />
+        <Compile Include="Models\GameSettingsModel.cs" />
         <Compile Include="Models\PlayerModel.cs" />
+        <Compile Include="Models\DiceRollModel.cs" />
         <Compile Include="Models\TurnModel.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Validators\IDiceRollValidator.cs" />

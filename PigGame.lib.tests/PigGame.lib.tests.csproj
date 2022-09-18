@@ -52,7 +52,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Models\DiceModelTests.cs" />
-        <Compile Include="Models\DiceRollModelTests.cs" />
+        <Compile Include="Models\GameTurnsModelTests.cs" />
         <Compile Include="Models\PlayerModelTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
