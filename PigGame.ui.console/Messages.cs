@@ -66,42 +66,42 @@ namespace PigGame.ui.console
 
         // @formatter:off — disable formatter after this line
         public string ShowGameLogo() =>
-            @"        __,---.__            ____              " + "\n" + 
-            @"     ,-'         `-.__      /\' .\    _____    " + "\n" + 
-            @"   &/           `._\ _\    /: \___\  / .  /\   " + "\n" +
-            @"   /               ''._    \' / . / /____/..\  " + "\n" + 
-            @"   |   ,             ("")    \/___/  \'  '\  /  " + "\n" + 
-            @"   |__,'`-..--|__|--''               \'__'\/   " + "\n" +
-            @"         --- WELCOME TO THE PIG GAME ---       " + "\n";
+            @"           __,---.__            ____              " + "\n" + 
+            @"        ,-'         `-.__      /\' .\    _____    " + "\n" + 
+            @"      &/           `._\ _\    /: \___\  / .  /\   " + "\n" +
+            @"      /               ''._    \' / . / /____/..\  " + "\n" + 
+            @"      |   ,             ("")    \/___/  \'  '\  /  " + "\n" + 
+            @"      |__,'`-..--|__|--''               \'__'\/   " + "\n" +
+            @"            --- WELCOME TO THE PIG GAME ---       " + "\n";
         // @formatter:on — enable formatter after this line
 
         // @formatter:off — disable formatter after this line
         public string ShowGameWon() =>
-            @"               _                           _              " + "\n" +
-            @"               ;`.                       ,'/              " + "\n" +
-            @"               |`.`-.      _____      ,-;,'|              " + "\n" +
-            @"               |  `-.\__,-'     `-.__//'   |              " + "\n" +
-            @"               |     `|               \ ,  |              " + "\n" +
-            @"               `.  ```                 ,  .'              " + "\n" +
-            @"                 \_`      .     ,   ,  `_/                " + "\n" +
-            @"                   \    ^  `   ,   ^ ` /                  " + "\n" +
-            @"                    | '  |  ____  | , |                   " + "\n" +
-            @"                    |     ,'    `.    |                   " + "\n" +
-            @"                    |    (  O' O  )   |                   " + "\n" +
-            @"                    `.    \__,.__/   ,'                   " + "\n" +
-            @"                      `-._  `--'  _,'                     " + "\n" +
-            @"                          `------'                        " + "\n" +
-            @"  _____   ___  ___  ___ _____   _____  _   _ ___________  " + "\n" +
-            @" |  __ \ / _ \ |  \/  ||  ___| |  _  || | | |  ___| ___ \ " + "\n" +
-            @" | |  \// /_\ \| .  . || |__   | | | || | | | |__ | |_/ / " + "\n" +
-            @" | | __ |  _  || |\/| ||  __|  | | | || | | |  __||    /  " + "\n" +
-            @" | |_\ \| | | || |  | || |___  \ \_/ /\ \_/ / |___| |\ \  " + "\n" +
-            @"  \____/\_| |_/\_|  |_/\____/   \___/  \___/\____/\_| \_| "+ "\n\n" ;
+            @"                 _                           _             " + "\n" +
+            @"                 ;`.                       ,'/             " + "\n" +
+            @"                 |`.`-.      _____      ,-;,'|             " + "\n" +
+            @"                 |  `-.\__,-'     `-.__//'   |             " + "\n" +
+            @"                 |     `|               \ ,  |             " + "\n" +
+            @"                 `.  ```                 ,  .'             " + "\n" +
+            @"                   \_`      .     ,   ,  `_/               " + "\n" +
+            @"                     \    ^  `   ,   ^ ` /                 " + "\n" +
+            @"                      | '  |  ____  | , |                  " + "\n" +
+            @"                      |     ,'    `.    |                  " + "\n" +
+            @"                      |    (  O' O  )   |                  " + "\n" +
+            @"                      `.    \__,.__/   ,'                  " + "\n" +
+            @"                        `-._  `--'  _,'                    " + "\n" +
+            @"                            `------'                       " + "\n" +
+            @"    _____   ___  ___  ___ _____   _____  _   _ ___________ " + "\n" +
+            @"   |  __ \ / _ \ |  \/  ||  ___| |  _  || | | |  ___| ___ \" + "\n" +
+            @"   | |  \// /_\ \| .  . || |__   | | | || | | | |__ | |_/ /" + "\n" +
+            @"   | | __ |  _  || |\/| ||  __|  | | | || | | |  __||    / " + "\n" +
+            @"   | |_\ \| | | || |  | || |___  \ \_/ /\ \_/ / |___| |\ \ " + "\n" +
+            @"    \____/\_| |_/\_|  |_/\____/   \___/  \___/\____/\_| \_|"+ "\n\n" ;
         // @formatter:on — enable formatter after this line
 
         public string ShowMainMenu()
         {
-            return $"Main Menu: \n{string.Join("\n", MainMenuOptions.Select(o => $"{o.Key.ToString()}: {o.Value.ToString()}"))}";
+            return $" Main Menu: \n{string.Join("\n", MainMenuOptions.Select(o => $"  {o.Key.ToString()}: {o.Value.ToString()}"))}\n";
         }
 
         public string ShowCurrentGameSettings()
@@ -111,14 +111,14 @@ namespace PigGame.ui.console
             var diceType = ShowCurrentGameSettingDiceType();
             var winScore = ShowCurrentGameSettingWinScore();
 
-            return $"Game Settings:\n{players}\n{gameMode}\n{diceType}\n{winScore}\n";
+            return $" Game Settings:\n{players}\n{gameMode}\n{diceType}\n{winScore}\n";
         }
 
         public string ShowCurrentGameSettingPlayers()
         {
             var playersCount = _gameEngine.Players.Count;
             var playersNames = playersCount == 0 ? "There is not players" : string.Join(", ", _gameEngine.Players);
-            var players = $"{playersCount.ToString()} Players: ({playersNames})";
+            var players = $"  {playersCount.ToString()} Players: ({playersNames})";
             return players;
         }
 
@@ -126,12 +126,12 @@ namespace PigGame.ui.console
         {
             var gameMode = $"Game Mode: {_gameEngine.Settings.GameMode.ToString()}";
             var diceCount = $"Number of dices: {_gameEngine.Settings.DiceCount.ToString()}";
-            return $"{gameMode}\n{diceCount}";
+            return $"  {gameMode}\n  {diceCount}";
         }
 
-        public string ShowCurrentGameSettingDiceType() => $"Dice Type: {_gameEngine.Settings.Dice.DiceType.ToString()}";
+        public string ShowCurrentGameSettingDiceType() => $"  Dice Type: {_gameEngine.Settings.Dice.DiceType.ToString()}";
 
-        public string ShowCurrentGameSettingWinScore() => $"Win Score: {_gameEngine.Settings.WinScore.ToString()}";
+        public string ShowCurrentGameSettingWinScore() => $"  Win Score: {_gameEngine.Settings.WinScore.ToString()}";
 
         public string ShowDiceTypesList() => $"Dice types: \n {string.Join("\n", DiceTypes.Select(d => $"{d.Key} : {d.Value}"))}";
 
@@ -144,7 +144,7 @@ namespace PigGame.ui.console
             var scoreBoard = _gameScoreToTableConverter.Convert(_gameEngine.Players);
             var playerInfo = $"Current Player: {_gameEngine.CurrentPlayer.Name}\nPlayer Turn: {_gameEngine.CurrentPlayer.Turns.TurnCounter.ToString()}";
             var playerRolls = $"Current turn rolls:\n{_gameEngine.CurrentPlayer.Turns.CurrentTurnRolls}";
-            return $"{scoreBoard}\n\n{playerInfo}\n\n{playerRolls}";
+            return $"{scoreBoard}\n\n {playerInfo}\n\n {playerRolls}";
         }
 
         public string ShowPlayerActions() =>
