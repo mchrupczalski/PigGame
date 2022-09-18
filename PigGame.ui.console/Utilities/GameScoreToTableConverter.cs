@@ -30,7 +30,7 @@ namespace PigGame.ui.console.Utilities
             const int extraSpace = 2;
             
             var names = players.Select(p => p.Name);
-            var nameMax = names.Max(n => n).Length;
+            var nameMax = names.Max(n => n.Length);
             nameColCharsCount = nameMax < nameColHeader.Length ? nameColHeader.Length : nameMax;
 
             nameColCharsCount += extraSpace;
@@ -50,7 +50,7 @@ namespace PigGame.ui.console.Utilities
                 var rowTurn = CreateCellAlignCenter(player.Turns.TurnCounter.ToString(), turnColCharsCount);
                 var rowScore = CreateCellAlignCenter(player.Turns.GameScore()
                                                            .ToString(), scoreColCharsCount);
-                rows.Add($"{rowPlayer}{rowTurn}{rowScore}");
+                rows.Add($"  {rowPlayer}{rowTurn}{rowScore}");
             }
 
             return $"{header}\n{string.Join("\n", rows)}";
@@ -68,7 +68,7 @@ namespace PigGame.ui.console.Utilities
             var sTurn = CreateCellAlignCenter(new string(rowSeparator,    turnColCharsCount),  turnColCharsCount);
             var sScore = CreateCellAlignCenter(new string(rowSeparator,   scoreColCharsCount), scoreColCharsCount);
 
-            return $"{hPlayers}{hTurn}{hScore}\n{sPlayers}{sTurn}{sScore}";
+            return $"  {hPlayers}{hTurn}{hScore}\n  {sPlayers}{sTurn}{sScore}";
         }
 
         private string CreateCellAlignCenter(string cellValue, int cellCharsCount, bool borderLeft = false)

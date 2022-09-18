@@ -71,7 +71,7 @@ namespace PigGame.ui.console
             @"      &/           `._\ _\    /: \___\  / .  /\   " + "\n" +
             @"      /               ''._    \' / . / /____/..\  " + "\n" + 
             @"      |   ,             ("")    \/___/  \'  '\  /  " + "\n" + 
-            @"      |__,'`-..--|__|--''               \'__'\/   " + "\n" +
+            @"      |__,'`-..--|__|--''               \'__'\/   " + "\n\n" +
             @"            --- WELCOME TO THE PIG GAME ---       " + "\n";
         // @formatter:on — enable formatter after this line
 
@@ -96,7 +96,7 @@ namespace PigGame.ui.console
             @"   | |  \// /_\ \| .  . || |__   | | | || | | | |__ | |_/ /" + "\n" +
             @"   | | __ |  _  || |\/| ||  __|  | | | || | | |  __||    / " + "\n" +
             @"   | |_\ \| | | || |  | || |___  \ \_/ /\ \_/ / |___| |\ \ " + "\n" +
-            @"    \____/\_| |_/\_|  |_/\____/   \___/  \___/\____/\_| \_|"+ "\n\n" ;
+            @"    \____/\_| |_/\_|  |_/\____/   \___/  \___/\____/\_| \_|"+ "\n" ;
         // @formatter:on — enable formatter after this line
 
         public string ShowMainMenu()
@@ -141,11 +141,13 @@ namespace PigGame.ui.console
 
         public string PlayerTurnDetails()
         {
-            var scoreBoard = _gameScoreToTableConverter.Convert(_gameEngine.Players);
+            var scoreBoard = ShowScoreBoard();
             var playerInfo = $"Current Player: {_gameEngine.CurrentPlayer.Name}\nPlayer Turn: {_gameEngine.CurrentPlayer.Turns.TurnCounter.ToString()}";
             var playerRolls = $"Current turn rolls:\n{_gameEngine.CurrentPlayer.Turns.CurrentTurnRolls}";
-            return $"{scoreBoard}\n\n {playerInfo}\n\n {playerRolls}";
+            return $"{scoreBoard}\n\n{playerInfo}\n\n{playerRolls}";
         }
+
+        public string ShowScoreBoard() => _gameScoreToTableConverter.Convert(_gameEngine.Players);
 
         public string ShowPlayerActions() =>
             $"{_gameEngine.CurrentPlayer.Name} it is your move. What do you want to do?\n{string.Join("\n", PlayerActions.Select(a => $"[{a.Key}] to {a.Value}"))}";

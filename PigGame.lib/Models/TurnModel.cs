@@ -75,6 +75,12 @@ namespace PigGame.lib.Models
         /// </summary>
         public void EndTurn() => _turnActive = false;
 
+        public void ResetTurns()
+        {
+            TurnCounter = 0;
+            CurrentTurnRolls = null;
+            TurnsRolls.Clear();
+        }
         /// <summary>
         ///     Sum of all rolls in all turns
         /// </summary>

@@ -120,8 +120,16 @@ namespace PigGame.lib
             {
                 throw;
             }
+
+            if (!PlayerWon()) return;
             
-            if(PlayerWon()) throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
+            CurrentPlayer.Turns.EndTurn();
+            throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
+        }
+
+        public void ResetPlayersGame()
+        {
+            Players.ForEach(p => p.Turns.ResetTurns());
         }
 
         private void PlayerRollDice()

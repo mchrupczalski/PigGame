@@ -10,9 +10,9 @@ namespace PigGame.ui.console
     {
         #region Static Fields and Const
 
-        private const string ErrContinue = "Press any key to continue.";
+        private const string ErrContinue = "\nPress any key to continue.";
 
-        private const string ErrTryAgain = "Press any key to try again.";
+        private const string ErrTryAgain = "\nPress any key to try again.";
 
         #endregion
 
@@ -40,9 +40,17 @@ namespace PigGame.ui.console
             while (!_terminate)
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine(_messages.ShowGameLogo());
-                Console.WriteLine(_messages.ShowGameSettingsAndMainMenu());
-                Console.Write("Select: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(_messages.ShowCurrentGameSettings());
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.WriteLine(_messages.ShowMainMenu());
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("  Select: ");
+                Console.ResetColor();
 
                 ActivateGameOption(Console.ReadLine());
             }
@@ -88,23 +96,32 @@ namespace PigGame.ui.console
                 }
                 catch (NotEnoughPlayersException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} Press any key to continue.");
                     Console.ReadKey();
+                    Console.ResetColor();
                     return;
                 }
                 catch (Exception e) when (e is ArgumentNullException || e is ArgumentOutOfRangeException || e is InvalidMenuOptionException)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
                     Console.Clear();
+                    Console.ResetColor();
                     return;
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
+
+        private void SetConsoleForErrorDisplay() => Console.ForegroundColor = ConsoleColor.DarkRed;
+        private void SetConsoleForSuccessDisplay() => Console.ForegroundColor = ConsoleColor.Green;
 
         private void OptionAddPlayer()
         {
@@ -122,19 +139,25 @@ namespace PigGame.ui.console
 
                     _gameEngine.AddPlayer(playerName);
 
-                    Console.WriteLine($"Player {playerName} added. Do you want to add another? Y/N: ");
+                    SetConsoleForSuccessDisplay();
+                    Console.WriteLine($"Player {playerName} added.\nDo you want to add another player? Y/N: ");
+                    Console.ResetColor();
                     var answer = Console.ReadLine();
                     playerAdded = answer?.ToUpper() != "Y";
                 }
                 catch (Exception e) when (e is PlayerNameNullException || e is PlayerNameIsTakenException)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
+                    Console.ResetColor();
                     playerAdded = false;
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
@@ -154,31 +177,45 @@ namespace PigGame.ui.console
                 }
                 catch (InvalidPlayerActionException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
+                    Console.ResetColor();
                 }
                 catch (NoScoreTurnEndException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrContinue}");
                     Console.ReadKey();
+                    Console.ResetColor();
                     _gameEngine.NextPlayer();
                 }
                 catch (MustRollCantHoldException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrContinue}");
                     Console.ReadKey();
+                    Console.ResetColor();
                 }
                 catch (GameWonException e)
                 {
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     gameEnded = true;
                     Console.Clear();
                     Console.WriteLine(_messages.ShowGameWon());
-                    Console.WriteLine($"{e.Message} {ErrContinue}");
+                    Console.WriteLine($"      {e.Message}");
+                    Console.WriteLine($"\nScore Board:\n{_messages.ShowScoreBoard()}");
+                    Console.WriteLine($"{ErrContinue}");
                     Console.ReadKey();
+                    Console.ResetColor();
+                    _gameEngine.ResetPlayersGame();
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
@@ -209,19 +246,25 @@ namespace PigGame.ui.console
 
                     _gameEngine.Settings.Dice.SetDiceType(newDice);
 
-                    Console.WriteLine($"Dice type changed to {newDice}. Return to main menu? Y/N:");
+                    SetConsoleForSuccessDisplay();
+                    Console.WriteLine($"Dice type changed to {newDice}.\nReturn to main menu? Y/N:");
+                    Console.ResetColor();
                     var answer = Console.ReadLine();
                     diceChanged = answer?.ToUpper() == "Y";
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
+                    Console.ResetColor();
                     diceChanged = false;
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
@@ -243,19 +286,25 @@ namespace PigGame.ui.console
 
                     _gameEngine.Settings.ChangeGameMode(newMode);
 
-                    Console.WriteLine($"Game Mode changed to {newMode}. Return to main menu? Y/N:");
+                    SetConsoleForSuccessDisplay();
+                    Console.WriteLine($"Game Mode changed to {newMode}.\nReturn to main menu? Y/N:");
+                    Console.ResetColor();
                     var answer = Console.ReadLine();
                     gameModeChanged = answer?.ToUpper() == "Y";
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
+                    Console.ResetColor();
                     gameModeChanged = false;
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
@@ -276,19 +325,25 @@ namespace PigGame.ui.console
                     if (!canConver) throw new ArgumentException("Incorrect value! New win score must be a number!");
                     _gameEngine.Settings.SetWinningScore(winScore);
 
-                    Console.WriteLine($"Win score changed to {newWinScore}. Return to main menu? Y/N:");
+                    SetConsoleForSuccessDisplay();
+                    Console.WriteLine($"Win score changed to {newWinScore}.\nReturn to main menu? Y/N:");
+                    Console.ResetColor();
                     var answer = Console.ReadLine();
                     winScoreChanged = answer?.ToUpper() == "Y";
                 }
                 catch (ArgumentException e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine($"{e.Message} {ErrTryAgain}");
                     Console.ReadKey();
+                    Console.ResetColor();
                     winScoreChanged = false;
                 }
                 catch (Exception e)
                 {
+                    SetConsoleForErrorDisplay();
                     Console.WriteLine(e);
+                    Console.ResetColor();
                     throw;
                 }
         }
