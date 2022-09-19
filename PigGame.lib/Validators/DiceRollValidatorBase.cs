@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PigGame.lib.Enums;
 
 namespace PigGame.lib.Validators
 {
@@ -9,9 +8,20 @@ namespace PigGame.lib.Validators
     {
         #region Properties
 
-        protected List<int> Rolls { get; set; }
-        protected int DiceOne { get; set; }
-        protected int? DiceTwo { get; set; }
+        /// <summary>
+        ///     List of rolls to validate
+        /// </summary>
+        protected List<int> Rolls { get; private set; }
+
+        /// <summary>
+        ///     Rolled value on Dice One
+        /// </summary>
+        protected int DiceOne { get; private set; }
+
+        /// <summary>
+        ///     Rolled value on Dice Two (can be null if only one dice used for the game)
+        /// </summary>
+        protected int? DiceTwo { get; private set; }
 
         #endregion
 
@@ -24,7 +34,7 @@ namespace PigGame.lib.Validators
             if (Rolls.Count == 0) throw new ArgumentNullException("There is no rolls to validate.");
             DiceOne = Rolls[0];
             DiceTwo = Rolls.Count == 2 ? Rolls[1] : (int?)null;
-            
+
             return true;
         }
 

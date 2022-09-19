@@ -25,7 +25,6 @@ namespace PigGame.ui.console
                                 services.AddTransient<PlayerModel>();
 
                                 // register factories
-                                services.AddSingleton<DiceRollModelFactory>();
                                 services.AddSingleton<PlayerFactory>();
                                 services.AddSingleton(provider => new TurnModel.DiceRollModelCreator(() => new DiceRollModel()));
                                 services.AddSingleton(provider => new PlayerFactory.TurnCreator(() => new TurnModel(provider.GetRequiredService<TurnModel.DiceRollModelCreator>())));

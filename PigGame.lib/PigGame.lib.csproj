@@ -53,7 +53,6 @@
         <Compile Include="Exceptions\PlayerNameIsTakenException.cs" />
         <Compile Include="Exceptions\PlayerNameNullException.cs" />
         <Compile Include="Factories\PlayerFactory.cs" />
-        <Compile Include="Factories\DiceRollModelFactory.cs" />
         <Compile Include="GameEngine.cs" />
         <Compile Include="Models\DiceModel.cs" />
         <Compile Include="Models\GameSettingsModel.cs" />

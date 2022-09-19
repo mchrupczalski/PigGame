@@ -6,6 +6,6 @@
         TwoDice,
         TwoDiceWithDoubles,
         BigPig,
-        BigPigWithDoubles,
+        BigPigWithDoubles
     }
 }

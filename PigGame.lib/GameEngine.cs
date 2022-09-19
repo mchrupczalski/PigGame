@@ -93,6 +93,11 @@ namespace PigGame.lib
             CurrentPlayer.Turns.NextTurn();
         }
 
+        /// <summary>
+        ///     An action taken by the current player
+        /// </summary>
+        /// <param name="action"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void PlayerMove(PlayerAction action)
         {
             try
@@ -142,11 +147,17 @@ namespace PigGame.lib
             }
         }
 
+        /// <summary>
+        ///     Resets the game, use before starting a new game
+        /// </summary>
         public void ResetPlayersGame()
         {
             Players.ForEach(p => p.Turns.ResetTurns());
         }
 
+        /// <summary>
+        ///     Logic for player rolling the dice
+        /// </summary>
         private void PlayerRollDice()
         {
             var rolls = new List<int>();
@@ -156,12 +167,17 @@ namespace PigGame.lib
             Settings.DiceRollValidator.RollIsValid(rolls);
         }
 
+        /// <summary>
+        ///     Checks if player has won the game
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="GameWonException">Thrown if player reached the game score</exception>
         public bool PlayerWon()
         {
             var won = CurrentPlayer.Turns.GameScore(true) >= Settings.WinScore;
-            
+
             if (!won) return false;
-            
+
             CurrentPlayer.Turns.EndTurn();
             throw new GameWonException($"{CurrentPlayer.Name} Won the game with score of : {CurrentPlayer.Turns.GameScore(true)}");
         }

@@ -7,6 +7,9 @@ namespace PigGame.lib.Factories
     {
         #region Delegates
 
+        /// <summary>
+        ///     Factory method to create <see cref="TurnModel" />
+        /// </summary>
         public delegate TurnModel TurnCreator();
 
         #endregion

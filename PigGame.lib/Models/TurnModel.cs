@@ -8,6 +8,9 @@ namespace PigGame.lib.Models
     {
         #region Delegates
 
+        /// <summary>
+        ///     A factory method to create a new <see cref="DiceRollModel" />
+        /// </summary>
         public delegate DiceRollModel DiceRollModelCreator();
 
         #endregion
@@ -75,15 +78,20 @@ namespace PigGame.lib.Models
         /// </summary>
         public void EndTurn() => _turnActive = false;
 
+        /// <summary>
+        ///     Clears all info about turns and rolls
+        /// </summary>
         public void ResetTurns()
         {
             TurnCounter = 0;
             CurrentTurnRolls = null;
             TurnsRolls.Clear();
         }
+
         /// <summary>
         ///     Sum of all rolls in all turns
         /// </summary>
+        /// <param name="includeCurrentTurn">If True, also includes a score for the current turn, even if turn is still active</param>
         /// <returns>
         ///     If a turn is active (player still rolls), returns a sum of all rolls in all turns, but current.
         ///     If current turn ended, returns a sum of all rolls in all turns.

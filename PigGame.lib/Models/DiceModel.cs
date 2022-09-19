@@ -7,19 +7,29 @@ namespace PigGame.lib.Models
     {
         #region Static Fields and Const
 
+        /// <summary>
+        ///     The min value that can be rolled on all dice types
+        /// </summary>
         private const int _diceMin = 1;
+
         private static readonly Random Random = new Random();
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        ///     The max value that can be rolled on the given dice type
+        /// </summary>
         private int _diceMax;
 
         #endregion
 
         #region Properties
 
+        /// <summary>
+        ///     The type of dice used for the game
+        /// </summary>
         public DiceType DiceType { get; private set; }
 
         #endregion

@@ -6,7 +6,14 @@ namespace PigGame.lib.Models
     {
         #region Properties
 
+        /// <summary>
+        ///     Player name
+        /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        ///     Holds info about player turns and rolls
+        /// </summary>
         public TurnModel Turns { get; }
 
         #endregion

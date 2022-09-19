@@ -14,6 +14,10 @@ namespace PigGame.lib.Validators
 
         #region Constructors
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="TwoDiceRollValidator" />
+        /// </summary>
+        /// <param name="useRuleForDoubles">Activate special validation rule for Two Dice game sub-variant</param>
         public TwoDiceRollValidator(bool useRuleForDoubles = false)
         {
             _useRuleForDoubles = useRuleForDoubles;
@@ -35,7 +39,7 @@ namespace PigGame.lib.Validators
                 if (Rolls.Count > 2)
                     throw new ArgumentOutOfRangeException(nameof(rolls), $"There is too many rolls. Passed {Rolls.Count}, expected 2");
 
-                if (DiceTwo == 1) 
+                if (DiceTwo == 1)
                     throw new OneRolledNoScoreTurnEndException("You thrown 1, your turn ended with no score.");
             }
             // two dice rule overrides single 1, if two 1's are rolled
@@ -47,11 +51,8 @@ namespace PigGame.lib.Validators
                 throw;
             }
 
-
             if (_useRuleForDoubles && DiceOne == DiceTwo)
                 throw new DoubleRolledMustRollCantHoldException($"You rolled doubles! ({DiceOne}:{DiceTwo}). You must roll again!");
-
-            // base will validate against single 1 value
 
             return true;
         }

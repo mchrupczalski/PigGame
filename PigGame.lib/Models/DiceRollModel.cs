@@ -21,11 +21,6 @@ namespace PigGame.lib.Models
         private readonly Dictionary<int, List<int>> _rolls = new Dictionary<int, List<int>>();
 
         /// <summary>
-        ///     The latest roll values.
-        /// </summary>
-        public List<int> LatestRolls { get; } = new List<int>();
-
-        /// <summary>
         ///     Number of rolls in turn
         /// </summary>
         private int _rollCounter = 1;
@@ -38,6 +33,11 @@ namespace PigGame.lib.Models
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///     The latest roll values.
+        /// </summary>
+        public List<int> LatestRolls { get; } = new List<int>();
 
         /// <summary>
         ///     Prevents player from holding turn.
@@ -74,7 +74,7 @@ namespace PigGame.lib.Models
         {
             LatestRolls.Clear();
             LatestRolls.AddRange(rolls);
-            
+
             _rolls.Add(NextRoll(), rolls.ToList());
             MustRoll = false;
         }
