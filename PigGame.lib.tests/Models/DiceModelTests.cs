@@ -14,12 +14,14 @@ namespace PigGame.lib.tests.Models
         [InlineData(DiceType.D10, 10)]
         [InlineData(DiceType.D12, 12)]
         [InlineData(DiceType.D20, 20)]
-        public void Dice_RollsInRange(DiceType diceType, int diceMax)
+        public void Roll_DifferentDiceTypes_RollsInRange(DiceType diceType, int diceMax)
         {
-            var d = new DiceModel(diceType);
-            var roll = d.Roll();
+            var dice = DiceModelDefaultConstructor(diceType);
+            var roll = dice.Roll();
             
             Assert.True(roll >= 1 && roll <= diceMax);
         }
+        
+        private DiceModel DiceModelDefaultConstructor(DiceType diceType = DiceType.D6) => new DiceModel(diceType);
     }
 }

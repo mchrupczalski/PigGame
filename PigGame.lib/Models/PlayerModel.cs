@@ -28,7 +28,7 @@ namespace PigGame.lib.Models
         /// <exception cref="ArgumentNullException">Thrown if player name not specified</exception>
         public PlayerModel(string name, TurnModel playerTurns)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = string.IsNullOrEmpty(name) ? throw new ArgumentNullException(nameof(name)) : name;
             Turns = playerTurns ?? throw new ArgumentNullException(nameof(playerTurns));
         }
 
