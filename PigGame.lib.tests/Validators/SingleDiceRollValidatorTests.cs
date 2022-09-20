@@ -8,7 +8,7 @@ namespace PigGame.lib.tests.Validators
     public class SingleDiceRollValidatorTests
     {
         [Fact]
-        public void RollIsValid_OnePassed_ThrowsException()
+        public void RollIsValid_OnePassed_ThrowsOneRolledNoScoreTurnEndException()
         {
             var validator = SingleDiceRollValidatorDefaultConstructor();
             var rolls = new List<int>() { 1 };

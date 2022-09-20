@@ -66,10 +66,12 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Factories\PlayerFactoryTests.cs" />
+        <Compile Include="GameEngineTests.cs" />
         <Compile Include="Models\DiceModelTests.cs" />
         <Compile Include="Models\DiceRollModelTests.cs" />
         <Compile Include="Models\GameSettingsModelTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Validators\BigPigRollValidatorTests.cs" />
         <Compile Include="Validators\SingleDiceRollValidatorTests.cs" />
         <Compile Include="Validators\TwoDiceRollValidatorTests.cs" />
     </ItemGroup>

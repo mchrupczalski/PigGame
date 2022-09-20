@@ -8,7 +8,7 @@ namespace PigGame.lib.Validators
     {
         #region Fields
 
-        private readonly bool _useRuleForDoubles;
+        protected readonly bool UseRuleForDoubles;
 
         #endregion
 
@@ -20,7 +20,7 @@ namespace PigGame.lib.Validators
         /// <param name="useRuleForDoubles">Activate special validation rule for Two Dice game sub-variant</param>
         public TwoDiceRollValidator(bool useRuleForDoubles = false)
         {
-            _useRuleForDoubles = useRuleForDoubles;
+            UseRuleForDoubles = useRuleForDoubles;
         }
 
         #endregion
@@ -51,7 +51,7 @@ namespace PigGame.lib.Validators
                 throw;
             }
 
-            if (_useRuleForDoubles && DiceOne == DiceTwo)
+            if (UseRuleForDoubles && DiceOne == DiceTwo)
                 throw new DoubleRolledMustRollCantHoldException($"You rolled doubles! ({DiceOne}:{DiceTwo}). You must roll again!");
 
             return true;

@@ -100,19 +100,26 @@ namespace PigGame.lib
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void PlayerMove(PlayerAction action)
         {
+            switch (action)
+            {
+                case PlayerAction.Roll:
+                    var rolls = PlayerRollDice();
+                    CurrentPlayer.Turns.CurrentTurnRolls.AddDicesRoll(rolls);
+                    ValidateRolls(rolls);
+                    break;
+                case PlayerAction.Hold:
+                    PlayerHold();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+            }
+        }
+
+        public void ValidateRolls(IEnumerable<int> rolls)
+        {
             try
             {
-                switch (action)
-                {
-                    case PlayerAction.Roll:
-                        PlayerRollDice();
-                        break;
-                    case PlayerAction.Hold:
-                        PlayerHold();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(action), action, null);
-                }
+                Settings.DiceRollValidator.RollIsValid(rolls);
             }
             catch (OneRolledNoScoreTurnEndException)
             {
@@ -130,7 +137,7 @@ namespace PigGame.lib
             catch (DoubleOnesRolledScoreLostTurnEndException)
             {
                 var totalScore = CurrentPlayer.Turns.GameScore(true);
-                CurrentPlayer.Turns.CurrentTurnRolls.OverrideScore(totalScore * -1);
+                CurrentPlayer.Turns.CurrentTurnRolls.OverrideScore((totalScore * -1)+2);
                 CurrentPlayer.Turns.EndTurn();
                 throw;
             }
@@ -158,13 +165,11 @@ namespace PigGame.lib
         /// <summary>
         ///     Logic for player rolling the dice
         /// </summary>
-        private void PlayerRollDice()
+        public List<int> PlayerRollDice()
         {
             var rolls = new List<int>();
             for (var i = 0; i < Settings.DiceCount; i++) rolls.Add(Settings.Dice.Roll());
-
-            CurrentPlayer.Turns.CurrentTurnRolls.AddDicesRoll(rolls);
-            Settings.DiceRollValidator.RollIsValid(rolls);
+            return rolls;
         }
 
         /// <summary>
@@ -189,7 +194,7 @@ namespace PigGame.lib
         ///     Depending on Roll Validator, player may be blocked from holding, must roll
         ///     again
         /// </exception>
-        private void PlayerHold()
+        public void PlayerHold()
         {
             if (CurrentPlayer.Turns.CurrentTurnRolls.MustRoll) throw new DoubleRolledMustRollCantHoldException($"{CurrentPlayer.Name} cannot hold. Must roll again.");
             CurrentPlayer.Turns.EndTurn();

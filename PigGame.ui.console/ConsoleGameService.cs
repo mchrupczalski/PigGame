@@ -246,7 +246,19 @@ namespace PigGame.ui.console
             var moveExists = _messages.PlayerActions.TryGetValue(action.ToUpper(), out var playerMove);
             if (!moveExists) throw new InvalidPlayerActionException($"Selected action [{action}] is not valid.");
 
-            _gameEngine.PlayerMove(playerMove);
+            switch (playerMove)
+            {
+                case PlayerAction.Roll:
+                    var rolls = _gameEngine.PlayerRollDice();
+                    _gameEngine.CurrentPlayer.Turns.CurrentTurnRolls.AddDicesRoll(rolls);
+                    _gameEngine.ValidateRolls(rolls);
+                    break;
+                case PlayerAction.Hold:
+                    _gameEngine.PlayerHold();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+            }
         }
 
         private void OptionChangeDiceType()

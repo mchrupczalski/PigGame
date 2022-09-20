@@ -23,11 +23,11 @@ namespace PigGame.lib.Validators
             {
                 base.RollIsValid(rolls);
             }
-            catch (DoubleOnesRolledScoreLostTurnEndException e)
+            catch (DoubleOnesRolledScoreLostTurnEndException)
             {
                 throw new DoubleOnesRolledAddsBonusException("You rolled double 1's which adds a bonus!");
             }
-            catch (DoubleRolledMustRollCantHoldException e)
+            catch (DoubleRolledMustRollCantHoldException)
             {
                 throw new DoubleRolledDoubleTheRollBonusException("You rolled doubles! Your score doubles for this roll!");
             }
